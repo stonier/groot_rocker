@@ -73,8 +73,8 @@ class RockerExtension(object):
         """Get a dict of local filenames and content to write into them"""
         return {}
 
-    @staticmethod
-    def get_name():
+    @classmethod
+    def get_name(cls):
         raise NotImplementedError
 
     def get_docker_args(self, cliargs):
@@ -333,20 +333,18 @@ def write_files(extensions, args_dict, target_directory):
 def generate_dockerfile(extensions, args_dict, base_image):
     dockerfile_str = ''
     for el in extensions:
-        dockerfile_str += '# Preamble from extension [%s]\n' % el.name
+        dockerfile_str += '# Preamble from extension [%s]\n' % el.get_name()
         dockerfile_str += el.get_preamble(args_dict) + '\n'
     dockerfile_str += '\nFROM %s\n' % base_image
     dockerfile_str += 'USER root\n'
     for el in extensions:
-        dockerfile_str += '# Snippet from extension [%s]\n' % el.name
+        dockerfile_str += '# Snippet from extension [%s]\n' % el.get_name()
         dockerfile_str += el.get_snippet(args_dict) + '\n'
     return dockerfile_str
 
 
 def list_plugins(extension_point='groot_rocker.extensions'):
-    print(f"Extension point: {extension_point}")
     for entry_point in pkg_resources.iter_entry_points(extension_point):
-        print(f"Entry point {entry_point}")
         entry_point.load()
     unordered_plugins = {
         entry_point.name: entry_point.load() for entry_point in pkg_resources.iter_entry_points(extension_point)
