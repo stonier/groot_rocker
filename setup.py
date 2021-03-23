@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import os
-from setuptools import setup
+import setuptools
 
 install_requires = [
     'empy',
@@ -30,31 +30,30 @@ else:
 install_requires.append(docker_package)
 
 kwargs = {
-    'name': 'rocker',
-    'version': '0.2.3',
-    'packages': ['rocker'],
-    'package_dir': {'': 'src'},
-    'package_data': {'rocker': ['templates/*.em']},
+    'name': 'groot_rocker',
+    'version': '0.2.3',  # also update version.py
+    'packages': ['groot_rocker'],
+    'package_data': {'groot_rocker': ['templates/*.em']},
     'entry_points': {
         'console_scripts': [
-            'rocker = rocker.cli:main',
-            'detect_docker_image_os = rocker.cli:detect_image_os',
-	    ],
-        'rocker.extensions': [
-            'devices = rocker.extensions:Devices',
-            'dev_helpers = rocker.extensions:DevHelpers',
-            'env = rocker.extensions:Environment',
-            'git = rocker.git_extension:Git',
-            'home = rocker.extensions:HomeDir',
-            'name = rocker.extensions:Name',
-            'network = rocker.extensions:Network',
-            'nvidia = rocker.nvidia_extension:Nvidia',
-            'pulse = rocker.extensions:PulseAudio',
-            'ssh = rocker.ssh_extension:Ssh',
-            'user = rocker.extensions:User',
-            'x11 = rocker.nvidia_extension:X11',
+            'groot-rocker = groot_rocker.cli:main',
+            'detect_docker_image_os = groot_rocker.cli:detect_image_os'
+        ],
+        'groot_rocker.extensions': [
+            'devices = groot_rocker.extensions:Devices',
+            'dev_helpers = groot_rocker.extensions:DevHelpers',
+            'env = groot_rocker.extensions:Environment',
+            'git = groot_rocker.git_extension:Git',
+            'home = groot_rocker.extensions:HomeDir',
+            'name = groot_rocker.extensions:Name',
+            'network = groot_rocker.extensions:Network',
+            'nvidia = groot_rocker.nvidia_extension:Nvidia',
+            'pulse = groot_rocker.extensions:PulseAudio',
+            'ssh = groot_rocker.ssh_extension:Ssh',
+            'user = groot_rocker.extensions:User',
+            'x11 = groot_rocker.nvidia_extension:X11',
         ]
-	},
+    },
     'author': 'Tully Foote',
     'author_email': 'tfoote@osrfoundation.org',
     'keywords': ['Docker'],
@@ -69,8 +68,7 @@ kwargs = {
     'python_requires': '>=3.0',
 
     'install_requires': install_requires,
-    'url': 'https://github.com/osrf/rocker'
+    'url': 'https://github.com/stonier/groot_rocker'
 }
 
-setup(**kwargs)
-
+setuptools.setup(**kwargs)

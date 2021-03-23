@@ -19,7 +19,7 @@ import docker
 import unittest
 
 
-from rocker.os_detector import detect_os
+from groot_rocker.os_detector import detect_os
 
 class RockerOSDetectorTest(unittest.TestCase):
 

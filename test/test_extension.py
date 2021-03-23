@@ -24,8 +24,8 @@ from pathlib import Path
 import pwd
 
 
-from rocker.core import list_plugins
-from rocker.extensions import name_to_argument
+from groot_rocker.core import list_plugins
+from groot_rocker.extensions import name_to_argument
 
 
 def plugin_load_parser_correctly(plugin):

@@ -215,7 +215,7 @@ class User(RockerExtension):
         self.name = User.get_name()
 
     def get_snippet(self, cliargs):
-        snippet = pkgutil.get_data('rocker', 'templates/%s_snippet.Dockerfile.em' % self.name).decode('utf-8')
+        snippet = pkgutil.get_data('groot_rocker', 'templates/%s_snippet.Dockerfile.em' % self.name).decode('utf-8')
         substitutions = self.get_environment_subs()
         substitutions['home_extension_active'] = True if 'home' in cliargs and cliargs['home'] else False
         return em.expand(snippet, substitutions)

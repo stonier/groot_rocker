@@ -24,10 +24,10 @@ import pexpect
 from io import BytesIO as StringIO
 from packaging.version import Version
 
-from rocker.core import DockerImageGenerator
-from rocker.core import list_plugins
-from rocker.core import get_docker_client
-from rocker.nvidia_extension import get_docker_version
+from groot_rocker.core import DockerImageGenerator
+from groot_rocker.core import list_plugins
+from groot_rocker.core import get_docker_client
+from groot_rocker.nvidia_extension import get_docker_version
 from test_extension import plugin_load_parser_correctly
 
 

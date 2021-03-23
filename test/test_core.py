@@ -21,11 +21,11 @@ import unittest
 
 from itertools import chain
 
-from rocker.core import DockerImageGenerator
-from rocker.core import list_plugins
-from rocker.core import get_docker_client
-from rocker.core import get_rocker_version
-from rocker.core import RockerExtensionManager
+import groot_rocker
+from groot_rocker.core import DockerImageGenerator
+from groot_rocker.core import list_plugins
+from groot_rocker.core import get_docker_client
+from groot_rocker.core import RockerExtensionManager
 
 class RockerCoreTest(unittest.TestCase):
 
@@ -48,8 +48,8 @@ class RockerCoreTest(unittest.TestCase):
         self.assertTrue('user' in plugin_names )
         self.assertTrue('home' in plugin_names )
 
-    def test_get_rocker_version(self):
-        v = get_rocker_version()
+    def test_get_version(self):
+        v = groot_rocker.__version__
         parts = v.split('.')
         self.assertEqual(len(parts), 3)
         for p in parts:

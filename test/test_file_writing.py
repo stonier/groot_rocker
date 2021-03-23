@@ -25,10 +25,10 @@ import pwd
 import shlex
 from tempfile import TemporaryDirectory
 
-from rocker.core import list_plugins
-from rocker.core import write_files
-from rocker.extensions import name_to_argument
-from rocker.extensions import RockerExtension
+from groot_rocker.core import list_plugins
+from groot_rocker.core import write_files
+from groot_rocker.extensions import name_to_argument
+from groot_rocker.extensions import RockerExtension
 
 from test_extension import plugin_load_parser_correctly
 

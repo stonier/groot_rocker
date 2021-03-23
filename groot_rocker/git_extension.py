@@ -14,7 +14,7 @@
 
 from argparse import ArgumentTypeError
 import os
-from rocker.extensions import RockerExtension
+from groot_rocker.extensions import RockerExtension
 
 
 class Git(RockerExtension):

@@ -16,7 +16,7 @@ from argparse import ArgumentTypeError
 import os
 import shlex
 
-from rocker.extensions import RockerExtension
+from groot_rocker.extensions import RockerExtension
 
 
 class Ssh(RockerExtension):

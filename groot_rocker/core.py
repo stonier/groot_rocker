@@ -21,7 +21,6 @@ import re
 import sys
 
 import pkg_resources
-import pkgutil
 from requests.exceptions import ConnectionError
 import shlex
 import subprocess
@@ -40,7 +39,11 @@ SYS_STDOUT = sys.stdout
 OPERATIONS_DRY_RUN = 'dry-run'
 OPERATIONS_NON_INTERACTIVE = 'non-interactive'
 OPERATIONS_INTERACTIVE = 'interactive'
-OPERATION_MODES = [OPERATIONS_INTERACTIVE, OPERATIONS_NON_INTERACTIVE , OPERATIONS_DRY_RUN]
+OPERATION_MODES = [
+    OPERATIONS_INTERACTIVE,
+    OPERATIONS_NON_INTERACTIVE,
+    OPERATIONS_DRY_RUN
+]
 
 
 class DependencyMissing(RuntimeError):
@@ -258,7 +261,7 @@ class DockerImageGenerator(object):
 
         image = self.image_id
         cmd = "docker run"
-        if(not kwargs.get('nocleanup')):
+        if(not kwargs.get('persistent')):
             # remove container only if --nocleanup is not present
             cmd += " --rm"
 
@@ -340,17 +343,15 @@ def generate_dockerfile(extensions, args_dict, base_image):
     return dockerfile_str
 
 
-def list_plugins(extension_point='rocker.extensions'):
+def list_plugins(extension_point='groot_rocker.extensions'):
+    print(f"Extension point: {extension_point}")
+    for entry_point in pkg_resources.iter_entry_points(extension_point):
+        print(f"Entry point {entry_point}")
+        entry_point.load()
     unordered_plugins = {
-    entry_point.name: entry_point.load()
-    for entry_point
-    in pkg_resources.iter_entry_points(extension_point)
+        entry_point.name: entry_point.load() for entry_point in pkg_resources.iter_entry_points(extension_point)
     }
     # Order plugins by extension point name for consistent ordering below
     plugin_names = list(unordered_plugins.keys())
     plugin_names.sort()
     return OrderedDict([(k, unordered_plugins[k]) for k in plugin_names])
-
-
-def get_rocker_version():
-    return pkg_resources.require('rocker')[0].version
