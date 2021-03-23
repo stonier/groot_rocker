@@ -247,6 +247,10 @@ def banner(msg):
     print(green + 80 * "*" + "\n" + reset)
 
 
+def footer():
+    print(green + 80 * "*" + "\n" + reset)
+
+
 def debug(msg):
     print(green + msg + reset)
 

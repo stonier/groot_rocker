@@ -16,6 +16,7 @@ The command line client.
 
 import argparse
 
+from . import console
 from . import core
 from . import os_detector
 from . import version
@@ -53,14 +54,17 @@ def main():
     active_extensions = extension_manager.get_active_extensions(args_dict)
     # Force user to end if present otherwise it will break other extensions
     active_extensions.sort(key=lambda e: e.get_name().startswith('user'))
-    print("Active extensions %s" % [e.get_name() for e in active_extensions])
+    console.banner("Command Line")
+    print(console.green + "Active Extensions" + console.reset)
+    for e in active_extensions:
+        print(" - " + console.cyan + e.get_name() + console.reset)
 
     base_image = args.image
 
     dig = core.DockerImageGenerator(active_extensions, args_dict, base_image)
     exit_code = dig.build(**vars(args))
     if exit_code != 0:
-        print("Build failed exiting")
+        console.error("Build failed exiting")
         return exit_code
     # Convert command into string
     args.command = ' '.join(args.command)

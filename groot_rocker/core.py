@@ -34,6 +34,8 @@ import signal
 import struct
 import termios
 
+from . import console as console
+
 SYS_STDOUT = sys.stdout
 
 OPERATIONS_DRY_RUN = 'dry-run'
@@ -95,7 +97,7 @@ class RockerExtension(object):
 class RockerExtensionManager:
     def __init__(self):
         self.available_plugins = list_plugins()
-    
+
     def extend_cli_parser(self, parser, default_args={}):
         for p in self.available_plugins.values():
             try:
@@ -109,7 +111,6 @@ class RockerExtensionManager:
         parser.add_argument('--extension-blacklist', nargs='*',
             default=[],
             help='Prevent any of these extensions from being loaded.')
-
 
     def get_active_extensions(self, cli_args):
         active_extensions = [e() for e in self.available_plugins.values() if e.check_args_for_activation(cli_args) and e.get_name() not in cli_args['extension_blacklist']]
@@ -128,14 +129,16 @@ def get_docker_client():
         # Validate that the server is available
         docker_client.ping()
         return docker_client
-    except (docker.errors.APIError, ConnectionError) as ex:
-        raise DependencyMissing('Docker Client failed to connect to docker daemon.'
+    except (docker.errors.APIError, ConnectionError) as unused_ex:
+        raise DependencyMissing(
+            'Docker Client failed to connect to docker daemon.'
             ' Please verify that docker is installed and running.'
             ' As well as that you have permission to access the docker daemon.'
-            ' This is usually by being a member of the docker group.')
+            ' This is usually by being a member of the docker group.'
+        )
 
 
-def docker_build(docker_client = None, output_callback = None, **kwargs):
+def docker_build(docker_client=None, output_callback=None, **kwargs):
     image_id = None
 
     if not docker_client:
@@ -201,11 +204,12 @@ class SIGWINCHPassthrough(object):
         # here: https://github.com/pexpect/pexpect/issues/465
         signal.signal(signal.SIGWINCH, signal.SIG_DFL)
 
+
 class DockerImageGenerator(object):
     def __init__(self, active_extensions, cliargs, base_image):
         self.built = False
         self.cliargs = cliargs
-        self.cliargs['base_image'] = base_image # inject base image into arguments for use
+        self.cliargs['base_image'] = base_image  # inject base image into arguments for use
         self.active_extensions = active_extensions
 
         self.dockerfile = generate_dockerfile(active_extensions, self.cliargs, base_image)
@@ -214,23 +218,25 @@ class DockerImageGenerator(object):
     def build(self, **kwargs):
         with tempfile.TemporaryDirectory() as td:
             df = os.path.join(td, 'Dockerfile')
-            print("Writing dockerfile to %s" % df)
             with open(df, 'w') as fh:
                 fh.write(self.dockerfile)
-            print('vvvvvv')
+            console.banner(f"Dockerfile ({df})")
             print(self.dockerfile)
-            print('^^^^^^')
             write_files(self.active_extensions, self.cliargs, td)
             arguments = {}
             arguments['path'] = td
             arguments['rm'] = True
             arguments['nocache'] = kwargs.get('nocache', False)
             arguments['pull'] = kwargs.get('pull', False)
-            print("Building docker file with arguments: ", arguments)
+            console.banner("Docker Build")
+            print(console.green + "Docker Build Arguments")
+            for k, v in arguments.items():
+                print(console.cyan + f"  {k}" + console.reset + ":" + console.yellow + f" {v}" + console.reset)
+            print(console.reset)
             try:
                 self.image_id = docker_build(
                     **arguments,
-                    output_callback=lambda output: print("building > %s" % output)
+                    output_callback=lambda output: print(console.green + "building > " + console.reset + f"{output}")
                 )
                 if self.image_id:
                     self.built = True
@@ -239,7 +245,7 @@ class DockerImageGenerator(object):
                     return 2
 
             except docker.errors.APIError as ex:
-                print("Docker build failed\n", ex)
+                console.error(f"Docker build failed [{str(ex)}]")
                 return 1
 
     def get_operating_mode(self, args):
@@ -249,9 +255,8 @@ class DockerImageGenerator(object):
             operating_mode = OPERATIONS_NON_INTERACTIVE
         if operating_mode == OPERATIONS_INTERACTIVE and not os.isatty(sys.__stdin__.fileno()):
             operating_mode = OPERATIONS_NON_INTERACTIVE
-            print("No tty detected for stdin forcing non-interactive")
+            console.warning("No tty detected for stdin forcing non-interactive")
         return operating_mode
-
 
     def generate_docker_cmd(self, command='', **kwargs):
         docker_args = ''
@@ -288,14 +293,13 @@ class DockerImageGenerator(object):
         operating_mode = self.get_operating_mode(kwargs)
 
         #   $DOCKER_OPTS \
+        console.banner("Docker Run")
         if operating_mode == OPERATIONS_DRY_RUN:
-            print("Run this command: \n\n\n")
-            print(cmd)
+            print(cmd + "\n")
             return 0
         elif operating_mode == OPERATIONS_NON_INTERACTIVE:
             try:
-                print("Executing command: ")
-                print(cmd)
+                print(cmd + "\n")
                 p = subprocess.run(shlex.split(cmd), check=True, stderr=subprocess.STDOUT)
                 return p.returncode
             except subprocess.CalledProcessError as ex:
@@ -303,8 +307,7 @@ class DockerImageGenerator(object):
                 return ex.returncode
         else:
             try:
-                print("Executing command: ")
-                print(cmd)
+                print(cmd + "\n")
                 p = pexpect.spawn(cmd)
                 with SIGWINCHPassthrough(p):
                     p.interact()
