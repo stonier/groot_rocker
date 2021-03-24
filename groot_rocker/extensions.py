@@ -61,36 +61,6 @@ class Devices(RockerExtension):
             help="Mount devices into the container.")
 
 
-class DevHelpers(RockerExtension):
-    @staticmethod
-    def get_name():
-        return 'dev_helpers'
-
-    def __init__(self):
-        self._env_subs = None
-        self.name = DevHelpers.get_name()
-
-
-    def get_environment_subs(self):
-        if not self._env_subs:
-            self._env_subs = {}
-        return self._env_subs
-
-    def get_preamble(self, cliargs):
-        return ''
-
-    def get_snippet(self, cliargs):
-        snippet = pkgutil.get_data('rocker', 'templates/%s_snippet.Dockerfile.em' % self.name).decode('utf-8')
-        return em.expand(snippet, self.get_environment_subs())
-
-    @staticmethod
-    def register_arguments(parser, defaults={}):
-        parser.add_argument(name_to_argument(DevHelpers.get_name()),
-            action='store_true',
-            default=defaults.get('dev_helpers', None),
-            help="add development tools emacs and byobu to your environment")
-
-
 class Name(RockerExtension):
     @staticmethod
     def get_name():
