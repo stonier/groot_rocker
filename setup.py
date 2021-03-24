@@ -50,7 +50,6 @@ kwargs = {
             'nvidia = groot_rocker.nvidia_extension:Nvidia',
             'pulse = groot_rocker.extensions:PulseAudio',
             'ssh = groot_rocker.ssh_extension:Ssh',
-            'user = groot_rocker.extensions:User',
             'x11 = groot_rocker.nvidia_extension:X11',
         ]
     },

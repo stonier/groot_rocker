@@ -196,38 +196,6 @@ class HomeDir(RockerExtension):
             help="mount the users home directory")
 
 
-class User(RockerExtension):
-    @staticmethod
-    def get_name():
-        return 'user'
-
-    def get_environment_subs(self):
-        if not self._env_subs:
-            user_vars = ['name', 'uid', 'gid', 'gecos','dir', 'shell']
-            userinfo = pwd.getpwuid(os.getuid())
-            self._env_subs = {
-                k: getattr(userinfo, 'pw_' + k)
-                for k in user_vars }
-        return self._env_subs
-
-    def __init__(self):
-        self._env_subs = None
-        self.name = User.get_name()
-
-    def get_snippet(self, cliargs):
-        snippet = pkgutil.get_data('groot_rocker', 'templates/%s_snippet.Dockerfile.em' % self.name).decode('utf-8')
-        substitutions = self.get_environment_subs()
-        substitutions['home_extension_active'] = True if 'home' in cliargs and cliargs['home'] else False
-        return em.expand(snippet, substitutions)
-
-    @staticmethod
-    def register_arguments(parser, defaults={}):
-        parser.add_argument(name_to_argument(User.get_name()),
-            action='store_true',
-            default=defaults.get('user', None),
-            help="mount the current user's id and run as that user")
-
-
 class Environment(RockerExtension):
     @staticmethod
     def get_name():
