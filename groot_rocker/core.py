@@ -61,7 +61,7 @@ class RockerExtension(object):
 
     def validate_environment(self, cliargs):
         """ Check that the environment is something that can be used.
-        This will check that we're on the right base OS and that the 
+        This will check that we're on the right base OS and that the
         necessary resources are available, like hardware."""
         pass
 
@@ -102,19 +102,23 @@ class RockerExtensionManager:
         for p in self.available_plugins.values():
             try:
                 p.register_arguments(parser, default_args)
-            except TypeError as ex:
+            except TypeError as unused_ex:
                 print("Extension %s doesn't support default arguments. Please extend it." % p.get_name())
                 p.register_arguments(parser)
-        parser.add_argument('--mode', choices=OPERATION_MODES,
+        parser.add_argument(
+            '--mode',
+            choices=OPERATION_MODES,
             default=OPERATIONS_INTERACTIVE,
             help="Choose mode of operation for rocker")
-        parser.add_argument('--extension-blacklist', nargs='*',
+        parser.add_argument(
+            '--extension-blacklist',
+            nargs='*',
             default=[],
             help='Prevent any of these extensions from being loaded.')
 
     def get_active_extensions(self, cli_args):
         active_extensions = [e() for e in self.available_plugins.values() if e.check_args_for_activation(cli_args) and e.get_name() not in cli_args['extension_blacklist']]
-        active_extensions.sort(key=lambda e:e.get_name().startswith('user'))
+        active_extensions.sort(key=lambda e: e.get_name().startswith('user'))
         return active_extensions
 
 
@@ -144,6 +148,8 @@ def docker_build(docker_client=None, output_callback=None, **kwargs):
     if not docker_client:
         docker_client = get_docker_client()
     kwargs['decode'] = True
+    for k, v in kwargs.items():
+        print(f"{k}: {v}")
     for line in docker_client.build(**kwargs):
         output = line.get('stream', '').rstrip()
         if not output:
@@ -228,6 +234,8 @@ class DockerImageGenerator(object):
             arguments['rm'] = True
             arguments['nocache'] = kwargs.get('nocache', False)
             arguments['pull'] = kwargs.get('pull', False)
+            if kwargs.get('tag') is not None:
+                arguments['tag'] = kwargs.get('tag')
             console.banner("Docker Build")
             print(console.green + "Docker Build Arguments")
             for k, v in arguments.items():
