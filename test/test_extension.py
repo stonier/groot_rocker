@@ -174,50 +174,6 @@ class NameExtensionTest(unittest.TestCase):
         self.assertTrue('--name docker_name' in args)
 
 
-class UserExtensionTest(unittest.TestCase):
-
-    def setUp(self):
-        # Work around interference between empy Interpreter
-        # stdout proxy and test runner. empy installs a proxy on stdout
-        # to be able to capture the information.
-        # And the test runner creates a new stdout object for each test.
-        # This breaks empy as it assumes that the proxy has persistent
-        # between instances of the Interpreter class
-        # empy will error with the exception
-        # "em.Error: interpreter stdout proxy lost"
-        em.Interpreter._wasProxyInstalled = False
-
-    def test_user_extension(self):
-        plugins = list_plugins()
-        user_plugin = plugins['user']
-        self.assertEqual(user_plugin.get_name(), 'user')
-
-        p = user_plugin()
-        self.assertTrue(plugin_load_parser_correctly(user_plugin))
-
-        env_subs = p.get_environment_subs()
-        self.assertEqual(env_subs['gid'], os.getgid())
-        self.assertEqual(env_subs['uid'], os.getuid())
-        self.assertEqual(env_subs['name'],  getpass.getuser())
-        self.assertEqual(env_subs['dir'],  str(Path.home()))
-        self.assertEqual(env_subs['gecos'],  pwd.getpwuid(os.getuid()).pw_gecos)
-        self.assertEqual(env_subs['shell'],  pwd.getpwuid(os.getuid()).pw_shell)
-
-        mock_cliargs = {}
-        snippet = p.get_snippet(mock_cliargs).splitlines()
-
-        uid_line = [l for l in snippet if '--uid' in l][0]
-        self.assertTrue(str(os.getuid()) in uid_line)
-
-        self.assertEqual(p.get_preamble(mock_cliargs), '')
-        self.assertEqual(p.get_docker_args(mock_cliargs), '')
-
-        self.assertTrue('mkhomedir_helper' in p.get_snippet(mock_cliargs))
-        home_active_cliargs = mock_cliargs
-        home_active_cliargs['home'] = True
-        self.assertFalse('mkhomedir_helper' in p.get_snippet(home_active_cliargs))
-
-
 class PulseExtensionTest(unittest.TestCase):
 
     def setUp(self):
