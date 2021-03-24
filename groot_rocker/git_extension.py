@@ -55,4 +55,4 @@ class Git(RockerExtension):
         parser.add_argument('--git',
             action='store_true',
             default=defaults.get(Git.get_name(), None),
-            help="Use the global Git settings from the host (/etc/gitconfig and ~/.gitconfig)")
+            help="use host settings (/etc/gitconfig and ~/.gitconfig)")

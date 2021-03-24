@@ -73,7 +73,7 @@ class X11(RockerExtension):
         parser.add_argument(name_to_argument(X11.get_name()),
             action='store_true',
             default=defaults.get(X11.get_name(), None),
-            help="Enable x11")
+            help="enable x11")
 
 
 class Nvidia(RockerExtension):
@@ -131,6 +131,6 @@ class Nvidia(RockerExtension):
         parser.add_argument(name_to_argument(Nvidia.get_name()),
             action='store_true',
             default=defaults.get(Nvidia.get_name(), None),
-            help="Enable nvidia")
+            help="enable nvidia")
 
 

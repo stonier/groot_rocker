@@ -109,12 +109,12 @@ class RockerExtensionManager:
             '--mode',
             choices=OPERATION_MODES,
             default=OPERATIONS_INTERACTIVE,
-            help="Choose mode of operation for rocker")
+            help=f"choose mode of operation (default:{OPERATIONS_INTERACTIVE})")
         parser.add_argument(
             '--extension-blacklist',
             nargs='*',
             default=[],
-            help='Prevent any of these extensions from being loaded.')
+            help='prevent these extensions from being loaded.')
 
     def get_active_extensions(self, cli_args):
         active_extensions = [e() for e in self.available_plugins.values() if e.check_args_for_activation(cli_args) and e.get_name() not in cli_args['extension_blacklist']]
