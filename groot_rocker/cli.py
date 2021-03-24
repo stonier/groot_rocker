@@ -34,8 +34,9 @@ def main():
     parser.add_argument('image')
     parser.add_argument('command', nargs='*', default='')
     parser.add_argument('--nocache', action='store_true')
-    parser.add_argument('--persistent', action='store_true', help='persist the container beyond the executed command')
+    parser.add_argument('--persistent', action='store_true', help="persist the container beyond the executed command")
     parser.add_argument('--pull', action='store_true')
+    parser.add_argument('--tag', type=str, default=None, help="human readable string identifiers for images in the 'name:tag' format")
     parser.add_argument(
         '-v', '--version', action='version', version='%(prog)s ' + version.__version__
     )
