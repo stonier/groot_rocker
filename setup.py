@@ -41,7 +41,6 @@ kwargs = {
         ],
         'groot_rocker.extensions': [
             'devices = groot_rocker.extensions:Devices',
-            'dev_helpers = groot_rocker.extensions:DevHelpers',
             'env = groot_rocker.extensions:Environment',
             'git = groot_rocker.git_extension:Git',
             'home = groot_rocker.extensions:HomeDir',
@@ -49,7 +48,6 @@ kwargs = {
             'network = groot_rocker.extensions:Network',
             'nvidia = groot_rocker.nvidia_extension:Nvidia',
             'pulse = groot_rocker.extensions:PulseAudio',
-            'ssh = groot_rocker.ssh_extension:Ssh',
             'x11 = groot_rocker.nvidia_extension:X11',
         ]
     },

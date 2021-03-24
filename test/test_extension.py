@@ -214,40 +214,6 @@ class PulseExtensionTest(unittest.TestCase):
         self.assertIn('/pulse/native:', docker_args)
         self.assertIn('/pulse/native --group-add', docker_args)
 
-EXPECTED_DEV_HELPERS_SNIPPET = """# workspace development helpers
-RUN apt-get update \\
- && apt-get install -y \\
-    byobu \\
-    emacs \\
- && apt-get clean
-"""
-
-class DevHelpersExtensionTest(unittest.TestCase):
-
-    def setUp(self):
-        # Work around interference between empy Interpreter
-        # stdout proxy and test runner. empy installs a proxy on stdout
-        # to be able to capture the information.
-        # And the test runner creates a new stdout object for each test.
-        # This breaks empy as it assumes that the proxy has persistent
-        # between instances of the Interpreter class
-        # empy will error with the exception
-        # "em.Error: interpreter stdout proxy lost"
-        em.Interpreter._wasProxyInstalled = False
-
-    def test_pulse_extension(self):
-        plugins = list_plugins()
-        dev_helper_plugin = plugins['dev_helpers']
-        self.assertEqual(dev_helper_plugin.get_name(), 'dev_helpers')
-
-        p = dev_helper_plugin()
-        self.assertTrue(plugin_load_parser_correctly(dev_helper_plugin))
-        
-        mock_cliargs = {}
-
-        self.assertEqual(p.get_snippet(mock_cliargs), EXPECTED_DEV_HELPERS_SNIPPET)
-        self.assertEqual(p.get_preamble(mock_cliargs), '')
-
 
 class EnvExtensionTest(unittest.TestCase):
 
