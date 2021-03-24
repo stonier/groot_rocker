@@ -82,7 +82,7 @@ class Name(RockerExtension):
     @staticmethod
     def register_arguments(parser, defaults={}):
         parser.add_argument('--name', default='',
-                            help='Name of the container.')
+                            help='name of the container.')
 
 
 class Network(RockerExtension):

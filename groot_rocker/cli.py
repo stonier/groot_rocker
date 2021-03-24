@@ -29,8 +29,8 @@ from . import version
 def main():
 
     parser = argparse.ArgumentParser(
-        description='A tool for running docker with extra options',
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+        description='A tool for running docker with extra options'
+    )
     parser.add_argument(
         '-v', '--version', action='version', version='%(prog)s ' + version.__version__
     )
