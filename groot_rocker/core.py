@@ -148,8 +148,6 @@ def docker_build(docker_client=None, output_callback=None, **kwargs):
     if not docker_client:
         docker_client = get_docker_client()
     kwargs['decode'] = True
-    for k, v in kwargs.items():
-        print(f"{k}: {v}")
     for line in docker_client.build(**kwargs):
         output = line.get('stream', '').rstrip()
         if not output:

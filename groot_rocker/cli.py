@@ -31,20 +31,27 @@ def main():
     parser = argparse.ArgumentParser(
         description='A tool for running docker with extra options',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('image')
-    parser.add_argument('command', nargs='*', default='')
-    parser.add_argument('--nocache', action='store_true')
-    parser.add_argument('--persistent', action='store_true', help="persist the container beyond the executed command")
-    parser.add_argument('--pull', action='store_true')
-    parser.add_argument('--tag', type=str, default=None, help="human readable string identifiers for images in the 'name:tag' format")
     parser.add_argument(
         '-v', '--version', action='version', version='%(prog)s ' + version.__version__
     )
 
+    image_options = parser.add_argument_group(title="Image Options", description="These options are transferred to 'docker image build'.")
+    image_options.add_argument('--nocache', action='store_true', help="do not use cache when building")
+    image_options.add_argument('--pull', action='store_true', help="always attempt to pull newer versions")
+    image_options.add_argument('--tag', type=str, default=None, help="image identifiers in the form name:tag")
+
+    run_options = parser.add_argument_group(title="Run Options", description="These options are transferred to 'docker run'.")
+    run_options.add_argument('--persistent', action='store_true', help="persist the container post-execution")
+
+    parser.add_argument('image')
+    parser.add_argument('command', nargs='*', default='')
+
+    extensions = parser.add_argument_group(title="Extensions")
+
     try:
         extension_manager = core.RockerExtensionManager()
         default_args = {}
-        extension_manager.extend_cli_parser(parser, default_args)
+        extension_manager.extend_cli_parser(extensions, default_args)
     except core.DependencyMissing as ex:
         # Catch errors if docker is missing or inaccessible.
         parser.error("DependencyMissing encountered: %s" % ex)
