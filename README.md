@@ -14,21 +14,34 @@ Want to transfer your git configuration? The **git** extension will do that. Map
 
 NB: docker caching will expedite the process, so that repeated execution will be almost as fast as just executing the command.
 
+# Installation
+
+**Support Matrix**
+
+**Docker**
+
+**Nvidia**
+
+Install [nvidia-docker 2](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker).
+
+```
+# Install
+$ HOST_DISTRIBUTION=$(. /etc/os-release; echo $ID$VERSION_ID)
+$ curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
+$ curl -s -L https://nvidia.github.io/nvidia-docker/${HOST_DISTRIBUTION}/nvidia-docker.list | \
+$ sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+$ sudo apt-get update
+$ sudo apt-get -q -y install nvidia-docker2 > /dev/null
+$ sudo systemctl restart docker
+# Test
+$ docker run --rm --gpus all nvidia/cuda:11.0-base nvidia-smi
+```
+
+**Groot Rocker**
+
 # Extensions
 
 Reusable dockerfile configuration is encoded via `RockerExtension` implementations. There are several simple examples in this repository, but more complex ones are housed (or migrating) to external repositories.
 
 * [groot_rocker_extensions](https://github.com/stonier/groot_rocker_extensions/blob/devel/README.md)
 
-# Usage - Examples
-
-See the extension repositories for examples.
-
-# Usage - Cleanup
-
-This script will generate unnamed/named images for each unique execution of `groot_rocker`. This can leave quite a few dangling images, especially
-if you are frequently running with non-persistent containers. You can batch prune these with:
-
-```
-$ docker image prune
-```
