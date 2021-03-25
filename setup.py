@@ -46,9 +46,7 @@ kwargs = {
             'home = groot_rocker.extensions:HomeDir',
             'name = groot_rocker.extensions:Name',
             'network = groot_rocker.extensions:Network',
-            'nvidia = groot_rocker.nvidia_extension:Nvidia',
             'pulse = groot_rocker.extensions:PulseAudio',
-            'x11 = groot_rocker.nvidia_extension:X11',
         ]
     },
     'author': 'Tully Foote',
