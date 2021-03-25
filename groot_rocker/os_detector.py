@@ -14,11 +14,10 @@
 
 import pexpect
 
-from ast import literal_eval 
+from ast import literal_eval
 from io import BytesIO as StringIO
 
-from .core import docker_build
-
+from .core import docker_build, get_docker_client
 
 DETECTION_TEMPLATE="""
 FROM python:3-stretch as detector
@@ -26,6 +25,8 @@ FROM python:3-stretch as detector
 # GLIBC is forwards compatible but not necessarily backwards compatible for pyinstaller
 # https://github.com/pyinstaller/pyinstaller/wiki/FAQ#gnulinux
 # StaticX is supposed to take care of this but there appears to be an issue when using subprocess
+
+LABEL tool=os_detect
 
 RUN mkdir -p /tmp/distrovenv
 RUN python3 -m venv /tmp/distrovenv
@@ -46,19 +47,29 @@ CMD [ "" ]
 
 _detect_os_cache = dict()
 
+
 def detect_os(image_name, output_callback=None, nocache=False):
     # Do not rerun OS detection if there is already a cached result for the given image
     if image_name in _detect_os_cache:
         return _detect_os_cache[image_name]
 
     iof = StringIO((DETECTION_TEMPLATE % locals()).encode())
-    image_id = docker_build(fileobj = iof, output_callback=output_callback, nocache=nocache)
+    docker_client = get_docker_client()
+    image_id = docker_build(
+        docker_client=docker_client,
+        fileobj=iof,
+        output_callback=output_callback,
+        nocache=nocache,
+        forcerm=True,  # don't leave containers lying around from RUN commands in DETECTION_TEMPLATE
+        tag="groot:" + f"os_detect_{image_name}".replace(':', '_')
+    )
     if not image_id:
+        docker_client.prune_images(filters={"label": "tool=os_detect"})  # clean up the incomplete image
         if output_callback:
             output_callback('Failed to build detector image')
         return None
 
-    cmd="docker run -it --rm %s" % image_id
+    cmd = "docker run -it --rm %s" % image_id
     if output_callback:
         output_callback("running, ", cmd)
     p = pexpect.spawn(cmd)
