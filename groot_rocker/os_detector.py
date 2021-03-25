@@ -26,7 +26,7 @@ FROM python:3-stretch as detector
 # https://github.com/pyinstaller/pyinstaller/wiki/FAQ#gnulinux
 # StaticX is supposed to take care of this but there appears to be an issue when using subprocess
 
-LABEL tool=os_detect
+LABEL stage=os_detect_builder
 
 RUN mkdir -p /tmp/distrovenv
 RUN python3 -m venv /tmp/distrovenv
@@ -55,6 +55,21 @@ def detect_os(image_name, output_callback=None, nocache=False):
 
     iof = StringIO((DETECTION_TEMPLATE % locals()).encode())
     docker_client = get_docker_client()
+    if not nocache:
+        # build and name an intermediate image
+        image_id = docker_build(
+            docker_client=docker_client,
+            fileobj=iof,
+            target="detector",
+            output_callback=output_callback,
+            nocache=nocache,
+            forcerm=True,  # don't leave containers lying around from RUN commands in DETECTION_TEMPLATE
+            tag="groot:" + f"os_detect_builder"
+        )
+        if not image_id:
+            if output_callback:
+                output_callback('Failed to build the os detector (intermediate image)')
+            return None
     image_id = docker_build(
         docker_client=docker_client,
         fileobj=iof,
@@ -64,10 +79,12 @@ def detect_os(image_name, output_callback=None, nocache=False):
         tag="groot:" + f"os_detect_{image_name}".replace(':', '_')
     )
     if not image_id:
-        docker_client.prune_images(filters={"label": "tool=os_detect"})  # clean up the incomplete image
         if output_callback:
-            output_callback('Failed to build detector image')
+            output_callback('Failed to build the os detector runtime image')
         return None
+    if not image_id or nocache:
+        # clean the intermediate builder image, if it exists
+        docker_client.prune_images(filters={"label": "stage=os_detect_builder"})
 
     cmd = "docker run -it --rm %s" % image_id
     if output_callback:
