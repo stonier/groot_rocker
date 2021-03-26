@@ -42,7 +42,6 @@ kwargs = {
         'groot_rocker.extensions': [
             'devices = groot_rocker.extensions:Devices',
             'env = groot_rocker.extensions:Environment',
-            'git = groot_rocker.git_extension:Git',
             'home = groot_rocker.extensions:HomeDir',
             'name = groot_rocker.extensions:Name',
             'network = groot_rocker.extensions:Network',
@@ -58,7 +57,7 @@ kwargs = {
         'License :: OSI Approved :: Apache Software License'
     ],
     'description': 'A tool to run docker containers with customized extras',
-    'long_description': 'A tool to run docker containers with customized extra added like nvidia gui support overlayed.',
+    'long_description': 'A tool to run docker containers with customized extra added like git gui support overlayed.',
     'license': 'Apache License 2.0',
     'python_requires': '>=3.0',
 
