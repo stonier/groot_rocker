@@ -30,8 +30,6 @@ from groot_rocker.core import write_files
 from groot_rocker.extensions import name_to_argument
 from groot_rocker.extensions import RockerExtension
 
-from test_extension import plugin_load_parser_correctly
-
 class ExtensionsTest(unittest.TestCase):
     def test_name_to_argument(self):
         self.assertEqual(name_to_argument('asdf'), '--asdf')

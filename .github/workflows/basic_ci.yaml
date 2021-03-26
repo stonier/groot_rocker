@@ -1,9 +1,13 @@
 name: Basic CI
-on: [push, pull_request]
+on:
+  push:
+    branches:
+     - devel
+  pull_request:
 
 jobs:
   basic_ci:
-    name: Basic CI
+    name: Bionic
     runs-on: ubuntu-18.04
     strategy:
       matrix:
@@ -19,9 +23,9 @@ jobs:
         python -m pip install --upgrade pip setuptools wheel
         pip install codecov coverage nose
         pip install .
-    - name: Run headless tests
+    - name: Headless tests
       uses: GabrielBB/xvfb-action@v1
       with:
-        run: nosetests -s -v --with-coverage --cover-package rocker --exclude test_nvidia_glmark2
+        run: nosetests -s -v --with-coverage --cover-package groot_rocker
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
