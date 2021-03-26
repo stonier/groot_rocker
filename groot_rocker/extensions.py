@@ -14,15 +14,11 @@
 
 import grp
 import os
-import docker
 import em
-import getpass
-import pwd
 import pkgutil
 from pathlib import Path
+import re
 from shlex import quote
-import subprocess
-import sys
 
 from .core import get_docker_client
 
@@ -61,28 +57,29 @@ class Devices(RockerExtension):
             help="Mount devices into the container.")
 
 
-class Name(RockerExtension):
-    @staticmethod
-    def get_name():
-        return 'name'
-
-    def __init__(self):
-        self.name = Name.get_name()
+class ContainerName(RockerExtension):
+    @classmethod
+    def get_name(cls):
+        return re.sub(r'(?<!^)(?=[A-Z])', '_', cls.__name__).lower()  # CamelCase to underscores
 
     def get_preamble(self, cliargs):
         return ''
 
     def get_docker_args(self, cliargs):
         args = ''
-        name = cliargs.get('name', None)
+        name = cliargs.get('container_name', None)
         if name:
-            args += ' --name %s ' % name
+            args += f' --name {name} '
         return args
 
     @staticmethod
     def register_arguments(parser, defaults={}):
-        parser.add_argument('--name', default=defaults.get('name', ''),
-                            help='name of the container.')
+        parser.add_argument(
+            '--container-name',
+            default=defaults.get(ContainerName.get_name(), None),
+            metavar="NAME",
+            help='human readable name for the container'
+        )
 
 
 class Network(RockerExtension):

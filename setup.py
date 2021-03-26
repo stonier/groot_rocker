@@ -40,10 +40,10 @@ kwargs = {
             'detect_docker_image_os = groot_rocker.cli:detect_image_os'
         ],
         'groot_rocker.extensions': [
+            'container_name = groot_rocker.extensions:ContainerName',
             'devices = groot_rocker.extensions:Devices',
             'env = groot_rocker.extensions:Environment',
             'home = groot_rocker.extensions:HomeDir',
-            'name = groot_rocker.extensions:Name',
             'network = groot_rocker.extensions:Network',
             'pulse = groot_rocker.extensions:PulseAudio',
         ]

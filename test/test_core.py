@@ -144,6 +144,6 @@ class RockerCoreTest(unittest.TestCase):
 
         self.assertIn('--rm', dig.generate_docker_cmd())
         self.assertIn('--rm', dig.generate_docker_cmd(mode='dry-run'))
-        self.assertIn('--rm', dig.generate_docker_cmd(nocleanup=''))
+        self.assertIn('--rm', dig.generate_docker_cmd(persistent=''))
 
-        self.assertNotIn('--rm', dig.generate_docker_cmd(nocleanup='true'))
+        self.assertNotIn('--rm', dig.generate_docker_cmd(persistent='true'))

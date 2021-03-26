@@ -142,7 +142,7 @@ class NetworkExtensionTest(unittest.TestCase):
         self.assertTrue('--network host' in args)
 
 
-class NameExtensionTest(unittest.TestCase):
+class ContainerNameExtensionTest(unittest.TestCase):
 
     def setUp(self):
         # Work around interference between empy Interpreter
@@ -157,19 +157,19 @@ class NameExtensionTest(unittest.TestCase):
 
     def test_name_extension(self):
         plugins = list_plugins()
-        name_plugin = plugins['name']
-        self.assertEqual(name_plugin.get_name(), 'name')
+        name_plugin = plugins['container_name']
+        self.assertEqual(name_plugin.get_name(), 'container_name')
 
         p = name_plugin()
         self.assertTrue(plugin_load_parser_correctly(name_plugin))
 
-        mock_cliargs = {'name': 'none'}
+        mock_cliargs = {'container_name': 'none'}
         self.assertEqual(p.get_snippet(mock_cliargs), '')
         self.assertEqual(p.get_preamble(mock_cliargs), '')
         args = p.get_docker_args(mock_cliargs)
         self.assertTrue('--name none' in args)
 
-        mock_cliargs = {'name': 'docker_name'}
+        mock_cliargs = {'container_name': 'docker_name'}
         args = p.get_docker_args(mock_cliargs)
         self.assertTrue('--name docker_name' in args)
 

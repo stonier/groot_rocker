@@ -239,9 +239,9 @@ class DockerImageGenerator(object):
             arguments['rm'] = True
             arguments['nocache'] = kwargs.get('nocache', False)
             arguments['pull'] = kwargs.get('pull', False)
-            if kwargs.get('tag') is not None:
-                arguments['tag'] = kwargs.get('tag')
-                self.image_name = kwargs.get('tag')
+            if kwargs.get('image_name') is not None:
+                arguments['tag'] = kwargs.get('image_name')
+                self.image_name = kwargs.get('image_name')
             console.banner("Docker Build")
             print(console.green + "Docker Build Arguments")
             for k, v in arguments.items():
