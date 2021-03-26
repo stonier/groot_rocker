@@ -1,0 +1,4 @@
+tag: groot:foo
+name: foo
+image: ubuntu:18.04
+command: "/bin/bash --login -i"
