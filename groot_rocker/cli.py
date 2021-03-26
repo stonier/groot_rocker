@@ -108,7 +108,10 @@ def load_arguments(
 
 
 def main():
-    options = load_arguments()
+    build_and_run(load_arguments())
+
+
+def build_and_run(options: typing.Dict[str, typing.Any]):
     extension_manager = core.RockerExtensionManager()
     active_extensions = extension_manager.get_active_extensions(options)
     # Force user to end if present otherwise it will break other extensions
