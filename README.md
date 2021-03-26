@@ -51,7 +51,7 @@ $ docker run --rm --gpus all nvidia/cuda:11.0-base nvidia-smi
 
 ```
 # A named bionic image / container with login and perisistence.
-$ groot-rocker --tag devel:foo --name foo --persistent ubuntu:18.04 "/bin/bash --login -i"
+$ groot-rocker --tag devel:foo --container-name foo --persistent ubuntu:18.04 "/bin/bash --login -i"
 
 root@0d06be52d77c:/# uname -a
 Linux 0d06be52d77c 4.15.0-128-generic #131-Ubuntu SMP Wed Dec 9 06:57:35 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
@@ -88,7 +88,7 @@ command: "/bin/bash --login -i"
 
 # config.yaml
 tag: devel:foo
-name: foo
+container_name: foo
 persistent: true
 image: ubuntu:18.04
 command: "/bin/bash --login -i"
@@ -96,10 +96,10 @@ command: "/bin/bash --login -i"
 Example execution:
 
 ```
-$ groot-rocker -c partial.yaml --name foo --tag devel:foo
+$ groot-rocker -c partial.yaml --tag devel:foo --container-name foo
 $ groot-rocker -c config.yaml
 # Option overrides
-$ groot-rocker -c config.yaml --tag devel:bar --name bar
+$ groot-rocker -c config.yaml --tag devel:bar --container-name bar
 ```
 
 ## Extensions
