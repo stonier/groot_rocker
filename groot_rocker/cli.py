@@ -59,24 +59,24 @@ def load_arguments(
         '-v', '--version', action='version', version='%(prog)s ' + version.__version__
     )
 
-    image_options = parser.add_argument_group(title="Image Options", description="These options are transferred to 'docker image build'.")
-    image_options.add_argument(
+    build_options = parser.add_argument_group(title="Build Options")
+    build_options.add_argument(
         '--nocache', action='store_true',
         default=set_default("nocache", yaml_defaults),
         help="do not use cache when building"
     )
-    image_options.add_argument(
+    build_options.add_argument(
         '--pull', action='store_true',
         default=set_default("pull", yaml_defaults),
         help="always attempt to pull newer versions"
     )
-    image_options.add_argument(
-        '--tag', type=str,
-        default=set_default("tag", yaml_defaults),
-        help="image identifiers in the form name:tag"
+    build_options.add_argument(
+        '--image-name', type=str, metavar="NAME",
+        default=set_default("image_name", yaml_defaults),
+        help="image names in the form repo:tag"
     )
 
-    run_options = parser.add_argument_group(title="Run Options", description="These options are transferred to 'docker run'.")
+    run_options = parser.add_argument_group(title="Run Options")
     run_options.add_argument(
         '--persistent', action='store_true',
         default=set_default("persistent", yaml_defaults), help="persist the container post-execution"
