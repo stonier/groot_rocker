@@ -43,7 +43,7 @@ class RockerCoreTest(unittest.TestCase):
     def test_list_plugins(self):
         plugins_found = list_plugins()
         plugin_names = plugins_found.keys()
-        self.assertTrue('nvidia' in plugin_names )
+        self.assertTrue('git' in plugin_names )
         self.assertTrue('pulse' in plugin_names )
         self.assertTrue('user' in plugin_names )
         self.assertTrue('home' in plugin_names )
