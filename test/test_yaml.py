@@ -12,7 +12,6 @@
 import unittest
 
 import groot_rocker
-import groot_rocker.console as console
 
 from . import utilities
 
@@ -29,8 +28,8 @@ class ExtensionTestCase(unittest.TestCase):
         )
         expected_options = {
             "image": "ubuntu:18.04",
-            "name": "foo",
-            "tag": "groot:foo",
+            "container_name": "foo",
+            "image_name": "groot:foo",
             "command": "/bin/bash --login -i"
         }
         print("\n")

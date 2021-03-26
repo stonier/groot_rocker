@@ -106,15 +106,16 @@ class Network(RockerExtension):
             default=defaults.get('network', None),
             help="What network configuration to use.")
 
+
 class PulseAudio(RockerExtension):
-    @staticmethod
-    def get_name():
+
+    @classmethod
+    def get_name(cls):
         return 'pulse'
 
     def __init__(self):
         self._env_subs = None
         self.name = PulseAudio.get_name()
-
 
     def get_environment_subs(self):
         if not self._env_subs:
@@ -128,20 +129,24 @@ class PulseAudio(RockerExtension):
         return ''
 
     def get_snippet(self, cliargs):
-        snippet = pkgutil.get_data('rocker', 'templates/%s_snippet.Dockerfile.em' % self.name).decode('utf-8')
+        snippet = pkgutil.get_data('groot_rocker', 'templates/%s_snippet.Dockerfile.em' % self.get_name()).decode('utf-8')
         return em.expand(snippet, self.get_environment_subs())
 
     def get_docker_args(self, cliargs):
-        args = ' -v /run/user/%(user_id)s/pulse:/run/user/%(user_id)s/pulse --device /dev/snd '\
-        ' -e PULSE_SERVER=unix:%(XDG_RUNTIME_DIR)s/pulse/native -v %(XDG_RUNTIME_DIR)s/pulse/native:%(XDG_RUNTIME_DIR)s/pulse/native --group-add %(audio_group_id)s '
+        args = (
+            " -v /run/user/%(user_id)s/pulse:/run/user/%(user_id)s/pulse --device /dev/snd "
+            " -e PULSE_SERVER=unix:%(XDG_RUNTIME_DIR)s/pulse/native -v %(XDG_RUNTIME_DIR)s/pulse/native:%(XDG_RUNTIME_DIR)s/pulse/native --group-add %(audio_group_id)s "
+        )
         return args % self.get_environment_subs()
 
     @staticmethod
     def register_arguments(parser, defaults={}):
-        parser.add_argument(name_to_argument(PulseAudio.get_name()),
+        parser.add_argument(
+            name_to_argument(PulseAudio.get_name()),
             action='store_true',
             default=defaults.get(PulseAudio.get_name(), None),
-            help="mount pulse audio devices")
+            help="mount pulse audio devices"
+        )
 
 
 class HomeDir(RockerExtension):

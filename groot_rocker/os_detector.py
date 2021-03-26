@@ -76,7 +76,7 @@ def detect_os(image_name, output_callback=None, nocache=False):
         output_callback=output_callback,
         nocache=nocache,
         forcerm=True,  # don't leave containers lying around from RUN commands in DETECTION_TEMPLATE
-        tag="groot:" + f"os_detect_{image_name}".replace(':', '_')
+        tag="groot:" + f"os_detect_{image_name}".replace(':', '_').replace('/', '_')
     )
     if not image_id:
         if output_callback:

@@ -43,10 +43,8 @@ class RockerCoreTest(unittest.TestCase):
     def test_list_plugins(self):
         plugins_found = list_plugins()
         plugin_names = plugins_found.keys()
-        self.assertTrue('git' in plugin_names )
-        self.assertTrue('pulse' in plugin_names )
-        self.assertTrue('user' in plugin_names )
-        self.assertTrue('home' in plugin_names )
+        self.assertTrue('pulse' in plugin_names)
+        self.assertTrue('home' in plugin_names)
 
     def test_get_version(self):
         v = groot_rocker.__version__
@@ -118,9 +116,9 @@ class RockerCoreTest(unittest.TestCase):
         self.assertIn('non-interactive', help_str)
         self.assertIn('--extension-blacklist', help_str)
 
-        active_extensions = active_extensions = extension_manager.get_active_extensions({'user': True, 'ssh': True, 'extension_blacklist': ['ssh']})
+        active_extensions = extension_manager.get_active_extensions({'container_name': True, 'pulse': True, 'extension_blacklist': ['pulse']})
         self.assertEqual(len(active_extensions), 1)
-        self.assertEqual(active_extensions[0].get_name(), 'user')
+        self.assertEqual(active_extensions[0].get_name(), 'container_name')
 
     def test_docker_cmd_interactive(self):
         dig = DockerImageGenerator([], {}, 'ubuntu:bionic')

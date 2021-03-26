@@ -1,4 +1,4 @@
-tag: groot:foo
-name: foo
+image_name: groot:foo
+container_name: foo
 image: ubuntu:18.04
 command: "/bin/bash --login -i"
