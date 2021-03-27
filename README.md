@@ -16,20 +16,16 @@ NB: docker caching will expedite the process, so that repeated execution will be
 
 ## Installation
 
-**Support Matrix**
+Currently tested and used on Ubuntu 18.04 with Python v3.
 
-...
-
-**Docker**
-
-...
-
-**Nvidia**
-
-Install [nvidia-docker 2](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker).
+**Docker & NVidia**
 
 ```
-# Install
+# Docker
+$ sudo apt install docker.io
+
+# Nvidia Docker 2 - https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker
+#   Not required, but fetch if you want to enable the nvidia extension in groot_rocker_extensions
 $ HOST_DISTRIBUTION=$(. /etc/os-release; echo $ID$VERSION_ID)
 $ curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
 $ curl -s -L https://nvidia.github.io/nvidia-docker/${HOST_DISTRIBUTION}/nvidia-docker.list | \
@@ -40,10 +36,21 @@ $ sudo systemctl restart docker
 # Test
 $ docker run --rm --gpus all nvidia/cuda:11.0-base nvidia-smi
 ```
-
 **Groot Rocker**
 
-...
+From PyPi: `pip3 -U install groot_rocker`
+
+In a Virtual Environment:
+```
+$ git clone https://github.com/stonier/groot_rocker.git ./groot_rocker
+$ cd groot_rocker
+$ . ./venv.bash
+$ groot-rocker --help
+# Build a .deb
+$ make deb
+```
+
+From PPA: *coming soon*
 
 ## Usage
 
