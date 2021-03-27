@@ -9,6 +9,7 @@
 # Imports
 ##############################################################################
 
+import os
 import unittest
 
 import groot_rocker
@@ -23,8 +24,10 @@ from . import utilities
 class ExtensionTestCase(unittest.TestCase):
 
     def test_defaults_from_yaml(self):
+        path = os.path.dirname(os.path.realpath(__file__))
+        config_yaml = os.path.join(path, 'config.yaml')
         options = groot_rocker.cli.load_arguments(
-            command_line_arguments=['-c', 'config.yaml']
+            command_line_arguments=['-c', config_yaml]
         )
         expected_options = {
             "image": "ubuntu:18.04",
