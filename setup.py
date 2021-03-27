@@ -10,6 +10,12 @@ install_requires = [
     'pyyaml',
 ]
 
+
+extras_require = {
+    'tests': ['nose', 'pytest'],
+    'packaging': ['stdeb', 'twine']
+}
+
 # docker API used to be in a package called `docker-py` before the 2.0 release
 docker_package = 'docker'
 try:
@@ -32,7 +38,7 @@ install_requires.append(docker_package)
 
 kwargs = {
     'name': 'groot_rocker',
-    'version': '0.2.3',  # also update version.py
+    'version': '0.3.0',  # also update version.py
     'packages': ['groot_rocker'],
     'package_data': {'groot_rocker': ['templates/*.em']},
     'entry_points': {
@@ -63,6 +69,7 @@ kwargs = {
     'python_requires': '>=3.0',
 
     'install_requires': install_requires,
+    'extras_require':  extras_require,
     'url': 'https://github.com/stonier/groot_rocker'
 }
 

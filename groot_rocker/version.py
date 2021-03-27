@@ -21,5 +21,4 @@ import pkg_resources
 ##############################################################################
 
 # When changing, also update setup.py
-# __version__ = '2.1.4'
 __version__ = pkg_resources.require('groot_rocker')[0].version
