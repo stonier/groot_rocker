@@ -12,7 +12,7 @@ install_requires = [
 
 
 extras_require = {
-    'tests': ['nose', 'pytest'],
+    'tests': ['codecov', 'coverage', 'nose', 'pytest'],
     'packaging': ['stdeb', 'twine']
 }
 

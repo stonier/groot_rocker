@@ -5,5 +5,5 @@ deb_dist
 *.pyc
 .coverage
 build
-rocker_venv
 .cache
+.venv

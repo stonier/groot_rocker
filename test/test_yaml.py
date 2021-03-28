@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # License: BSD
-#   https://raw.githubusercontent.com/stonier/groot_rocker_extensions/devel/LICENSE
+#   https://raw.githubusercontent.com/stonier/groot_rocker/devel/LICENSE
 #
 
 ##############################################################################
