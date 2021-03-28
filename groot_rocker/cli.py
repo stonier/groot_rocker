@@ -48,7 +48,7 @@ def load_arguments(
     yaml_defaults = {}
     if config_args.config is not None:
         with open(config_args.config, 'r') as stream:
-            yaml_defaults = yaml.load(stream)
+            yaml_defaults = yaml.load(stream, yaml.loader.FullLoader)
 
     parser = argparse.ArgumentParser(
         parents=[config_parser],
