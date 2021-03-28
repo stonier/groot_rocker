@@ -23,7 +23,7 @@ jobs:
         python -m pip install --upgrade pip setuptools wheel
         pip install codecov coverage nose
         pip install .
-    - name: Headless tests
+    - name: Tests
       uses: GabrielBB/xvfb-action@v1
       with:
         run: nosetests -s -v --with-coverage --cover-package groot_rocker

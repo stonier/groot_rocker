@@ -1,20 +1,10 @@
 # Groot Rocker
 
-A tool, inspired by tfoote's [rocker](https://github.com/osrf/rocker) package (and this may one day get back to being a strict fork of that).
+A tool, inspired by tfoote's [rocker](https://github.com/osrf/rocker) package. The `groot_rocker` package captures common docker patterns as reusable modules/extensions and the `groot-rocker` script is a tool for composing those patterns into docker images and containers that execute a specific command in the environment of your choice. In short, **reusable dockerfile/runtime patterns**.
 
-## Overview
+Transfer your **git** configuration into a docker container? Map your **user** into the docker environment? Enable **nvidia**? The git, user and nvidia extensions will do that. Mix and match as you please.
 
-Problem-to-solve: Execute a command, but do it in an environment of my choosing (not necessarily your native system environment).
-
-This package provides a console script `groot-rocker` that lets you specify the command of your choice along with options that help configure a sandboxed docker environment for that command to execute in. 
-
-The **secret sauce** - behind the scenes the script will convert the options you've provided to configure the environment into `Dockerfile` snippets that are stitched together to help build the docker environment requested. In short, **reusable dockerfile patterns**. 
-
-Want to transfer your git configuration? The **git** extension will do that. Map your current user into the docker environment? The **user** extension will do that. Mix and match as you please.
-
-NB: docker caching will expedite the process, so that repeated execution will be almost as fast as just executing the command.
-
-## Installation
+## Prerequisites
 
 Currently tested and used on Ubuntu 18.04 with Python v3.
 
@@ -36,11 +26,12 @@ $ sudo systemctl restart docker
 # Test
 $ docker run --rm --gpus all nvidia/cuda:11.0-base nvidia-smi
 ```
-**Groot Rocker**
+## Installation
 
 From PyPi: `pip3 -U install groot_rocker`
 
 In a Virtual Environment:
+
 ```
 $ git clone https://github.com/stonier/groot_rocker.git ./groot_rocker
 $ cd groot_rocker
@@ -54,7 +45,7 @@ From PPA: *coming soon*
 
 ## Usage
 
-### Command Line
+**Command Line**
 
 ```
 # A named bionic image / container with login and perisistence.
@@ -80,7 +71,7 @@ docker container start -i foo
 
 See the additional extension repositories for more complex examples.
 
-### From Yaml
+**From Yaml**
 
 As you might imagine, with a sufficient number of extensions, this might start driving even the most
 meticulous person a little crazy. With a yaml file, can configure your requests.

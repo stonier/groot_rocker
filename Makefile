@@ -64,6 +64,6 @@ pypi_test:
 	twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 
 tests:
-	python setup.py test
+	nosetests -s -v --with-coverage --cover-package groot_rocker
 
 .PHONY: tests clean
