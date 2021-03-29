@@ -55,8 +55,8 @@ kwargs = {
             'pulse = groot_rocker.extensions:PulseAudio',
         ]
     },
-    'author': 'Tully Foote',
-    'author_email': 'tfoote@osrfoundation.org',
+    'author': 'Daniel Stonier',
+    'author_email': 'd.stonier@gmail.com',
     'keywords': ['Docker'],
     'classifiers': [
         'Programming Language :: Python',
