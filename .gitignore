@@ -7,3 +7,4 @@ deb_dist
 build
 .cache
 .venv
+groot_rocker*.gz
