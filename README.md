@@ -41,7 +41,14 @@ $ groot-rocker --help
 $ make deb
 ```
 
-From PPA: *coming soon*
+From PPA: 
+
+```
+$ sudo add-apt-repository ppa:d-stonier/snorriheim
+$ sudo apt update
+$ sudo apt install python3-groot-rocker
+$ groot-rocker --help
+```
 
 ## Usage
 
