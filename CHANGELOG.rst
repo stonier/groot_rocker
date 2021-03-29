@@ -5,6 +5,10 @@ Forthcoming
 -----------
 * ...
 
+0.3.1 (2021-03-27)
+------------------
+* [infra] add missing python3-yaml deb dependency, `#28 <https://github.com/stonier/groot_rocker/pull/28>`_
+
 0.3.0 (2021-03-27)
 ------------------
 * [infra] enable github actions, `#24 <https://github.com/stonier/groot_rocker/pull/24>`_
