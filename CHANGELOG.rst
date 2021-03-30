@@ -3,11 +3,11 @@ Release Notes
 
 Forthcoming
 -----------
-* ...
+* [infra] add docker.io as deb dependency, `#29 <https://github.com/stonier/groot_rocker/pull/29>`_
 
 0.3.2 (2021-03-28)
 ------------------
-* [infra] add missing python3-yaml deb dependency, `#28 <https://github.com/stonier/groot_rocker/pull/28>`_
+[infra] add missing python3-yaml deb dependency, `#28 <https://github.com/stonier/groot_rocker/pull/28>`_
 
 0.3.0 (2021-03-27)
 ------------------
