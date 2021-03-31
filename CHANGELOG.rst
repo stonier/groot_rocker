@@ -3,6 +3,10 @@ Release Notes
 
 Forthcoming
 -----------
+* ...
+
+0.3.3 (2021-03-31)
+------------------
 * [core] prioritise user extensions, `#31 <https://github.com/stonier/groot_rocker/pull/31>`_
 * [infra] add docker.io as deb dependency, `#29 <https://github.com/stonier/groot_rocker/pull/29>`_
 
