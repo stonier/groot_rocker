@@ -19,6 +19,7 @@ import io
 import os
 import re
 import sys
+import typing
 
 import pkg_resources
 from requests.exceptions import ConnectionError
@@ -64,6 +65,15 @@ class RockerExtension(object):
         This will check that we're on the right base OS and that the
         necessary resources are available, like hardware."""
         pass
+
+    @staticmethod
+    def desired_extensions() -> typing.Set[str]:
+        """
+        Used to order the application of extensions. This does not
+        require that the extensions be active, merely that they be
+        applied before this extension if they are present.
+        """
+        return set()
 
     def get_preamble(self, cliargs):
         return ''
@@ -117,9 +127,49 @@ class RockerExtensionManager:
             help='prevent these extensions from being loaded.')
 
     def get_active_extensions(self, cli_args):
-        active_extensions = [e() for e in self.available_plugins.values() if e.check_args_for_activation(cli_args) and e.get_name() not in cli_args['extension_blacklist']]
-        active_extensions.sort(key=lambda e: e.get_name().startswith('user'))
-        return active_extensions
+        active_extensions = {
+            name: cls for name, cls in self.available_plugins.items()
+            if cls.check_args_for_activation(cli_args) and cls.get_name() not in cli_args['extension_blacklist']
+        }
+        return self.sort_extensions(active_extensions)
+
+    @staticmethod
+    def sort_extensions(extensions: typing.Dict[str, typing.Type[RockerExtension]]) -> typing.List[RockerExtension]:
+
+        def topological_sort(source: typing.Dict[str, typing.Set[str]]) -> typing.List[str]:
+            """Perform a topological sort on names and dependencies and returns the sorted list of names."""
+            names = set(source.keys())
+            # dependencies are merely desired, not required, so prune them if they are not active
+            pending = [(name, dependencies.intersection(names)) for name, dependencies in source.items()]
+            emitted = []
+            while pending:
+                next_pending = []
+                next_emitted = []
+                for entry in pending:
+                    name, deps = entry
+                    deps.difference_update(emitted)  # remove dependencies already emitted
+                    if deps:  # still has dependencies? recheck during next pass
+                        next_pending.append(entry)
+                    else:  # no more dependencies? time to emit
+                        yield name
+                        next_emitted.append(name)  # remember what was emitted for difference_update()
+                if not next_emitted:
+                    raise ValueError("cyclic dependancy detected: %r" % (next_pending,))
+                pending = next_pending
+                emitted = next_emitted
+        user_extension_graph = {}
+        root_extension_graph = {}
+        for name, cls in extensions.items():
+            if name == "user" or "user" in cls.desired_extensions():
+                user_extension_graph[name] = cls.desired_extensions()
+            else:
+                root_extension_graph[name] = cls.desired_extensions()
+        active_extension_list = []
+        for name in topological_sort(root_extension_graph):
+            active_extension_list.append(extensions[name]())
+        for name in topological_sort(user_extension_graph):
+            active_extension_list.append(extensions[name]())
+        return active_extension_list
 
 
 def get_docker_client():

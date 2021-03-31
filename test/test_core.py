@@ -120,6 +120,25 @@ class RockerCoreTest(unittest.TestCase):
         self.assertEqual(len(active_extensions), 1)
         self.assertEqual(active_extensions[0].get_name(), 'container_name')
 
+    def test_extension_sorting(self):
+        class Foo(groot_rocker.core.RockerExtension):
+            @classmethod
+            def get_name(cls):
+                return "foo"
+
+        class Bar(groot_rocker.core.RockerExtension):
+            @classmethod
+            def get_name(cls):
+                return "bar"
+
+            @staticmethod
+            def desired_extensions():
+                return {"foo"}
+
+        sorted_extensions = RockerExtensionManager.sort_extensions(extensions={'bar': Bar, 'foo': Foo})
+        self.assertEqual(sorted_extensions[0].get_name(), "foo")
+        self.assertEqual(sorted_extensions[1].get_name(), "bar")
+
     def test_docker_cmd_interactive(self):
         dig = DockerImageGenerator([], {}, 'ubuntu:bionic')
 
@@ -135,7 +154,6 @@ class RockerCoreTest(unittest.TestCase):
             self.assertNotIn('-it', dig.generate_docker_cmd(mode='interactive'))
 
         self.assertNotIn('-it', dig.generate_docker_cmd(mode='non-interactive'))
-
 
     def test_docker_cmd_nocleanup(self):
         dig = DockerImageGenerator([], {}, 'ubuntu:bionic')
