@@ -114,8 +114,6 @@ def main():
 def build_and_run(options: typing.Dict[str, typing.Any]):
     extension_manager = core.RockerExtensionManager()
     active_extensions = extension_manager.get_active_extensions(options)
-    # Force user to end if present otherwise it will break other extensions
-    active_extensions.sort(key=lambda e: e.get_name().startswith('user'))
     console.banner("Command Line")
     print(console.green + "Options" + console.reset)
     for k, v in options.items():
@@ -123,7 +121,6 @@ def build_and_run(options: typing.Dict[str, typing.Any]):
     print(console.green + "\nActive Extensions" + console.reset)
     for e in active_extensions:
         print(" - " + console.cyan + e.get_name() + console.reset)
-
     base_image = options["image"]
     dig = core.DockerImageGenerator(active_extensions, options, base_image)
     exit_code = dig.build(**options)
