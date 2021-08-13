@@ -8,6 +8,7 @@ install_requires = [
     'pexpect',
     'packaging',
     'pyyaml',
+    'six',  # workaround for missing dependency transitive to docker
 ]
 
 
