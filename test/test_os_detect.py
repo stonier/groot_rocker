@@ -37,6 +37,11 @@ class RockerOSDetectorTest(unittest.TestCase):
         self.assertEqual(result[0], 'Ubuntu')
         self.assertEqual(result[1], '18.04')
 
+        # Cover verbose codepath
+        result = detect_os("ubuntu:focal")
+        self.assertEqual(result[0], 'Ubuntu')
+        self.assertEqual(result[1], '20.04')
+
     def test_fedora(self):
         result = detect_os("fedora:29")
         self.assertEqual(result[0], 'Fedora')
