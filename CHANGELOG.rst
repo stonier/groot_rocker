@@ -5,6 +5,11 @@ Forthcoming
 -----------
 * ...
 
+0.3.4 (2021-08-13)
+------------------
+* [core] move on from deprecated distro.linux_distribution(), `#33 <https://github.com/stonier/groot_rocker/pull/33>`_
+* [infra] depend on docker.io OR docker-ce, `50767d20 <https://github.com/stonier/groot_rocker/commit/50767d205591e4a467a944bd57a191c4620078bb>`_
+
 0.3.3 (2021-03-31)
 ------------------
 * [core] prioritise user extensions, `#31 <https://github.com/stonier/groot_rocker/pull/31>`_
