@@ -15,6 +15,7 @@ The command line client.
 ##############################################################################
 
 import argparse
+import sys
 import typing
 import yaml
 
@@ -108,7 +109,9 @@ def load_arguments(
 
 
 def main():
-    build_and_run(load_arguments())
+    result = build_and_run(load_arguments())
+    if result:
+        sys.exit(result)
 
 
 def build_and_run(options: typing.Dict[str, typing.Any]):

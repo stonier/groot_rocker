@@ -350,8 +350,20 @@ class DockerImageGenerator(object):
             try:
                 e.precondition_environment(self.cliargs)
             except subprocess.CalledProcessError as ex:
-                print("ERROR! Failed to precondition for extension [%s] with error: %s\ndeactivating" % (e.get_name(), ex))
+                console.error("Failed to precondition environment for extension '%s' [%s][%s]" % (
+                    e.get_name(), ex.returncode, ex.output)
+                )
                 return 1
+
+#         for e in self.active_extensions:
+#             try:
+#                 print(f"Validate: {e.get_name()}")
+#                 e.validate_environment(self.cliargs)
+#             except subprocess.CalledProcessError as ex:
+#                 console.error("Failed to validate environment for extension '%s' [%s][%s]" % (
+#                     e.get_name(), ex.returncode, ex.output)
+#                 )
+#                 return 1
 
         cmd = self.generate_docker_cmd(command, **kwargs)
         operating_mode = self.get_operating_mode(kwargs)
