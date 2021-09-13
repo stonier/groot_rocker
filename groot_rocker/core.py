@@ -53,6 +53,14 @@ class DependencyMissing(RuntimeError):
     pass
 
 
+class ValidateError(RuntimeError):
+    pass
+
+
+class RequiredExtensionMissingError(RuntimeError):
+    pass
+
+
 class RockerExtension(object):
     """The base class for Rocker extension points"""
 
@@ -61,17 +69,30 @@ class RockerExtension(object):
         pass
 
     def validate_environment(self, cliargs):
-        """ Check that the environment is something that can be used.
+        """
+        Check that the environment is something that can be used.
         This will check that we're on the right base OS and that the
-        necessary resources are available, like hardware."""
+        necessary resources are available, like hardware.
+
+        @raises ValidateError: if a problem is encountered.
+        """
         pass
 
     @staticmethod
     def desired_extensions() -> typing.Set[str]:
         """
-        Used to order the application of extensions. This does not
-        require that the extensions be active, merely that they be
-        applied before this extension if they are present.
+        Optionally required extensions. This merely ensures the desired
+        extensions are applied before this extension when applying
+        snippets and arguments if they are present.
+        """
+        return set()
+
+    @staticmethod
+    def required_extensions() -> typing.Set[str]:
+        """
+        Ensures the specified extensions are present and combined with
+        this extension. In addition, it orders the application of
+        the required extensions before this extension.
         """
         return set()
 
@@ -127,10 +148,18 @@ class RockerExtensionManager:
             help='prevent these extensions from being loaded.')
 
     def get_active_extensions(self, cli_args):
+        """
+        Checks for missing dependencies (specified by each extension's
+        required_extensions() method) and additionally sorts them.
+        """
         active_extensions = {
             name: cls for name, cls in self.available_plugins.items()
             if cls.check_args_for_activation(cli_args) and cls.get_name() not in cli_args['extension_blacklist']
         }
+        names = set(active_extensions.keys())
+        for name, cls in active_extensions.items():
+            if not cls.required_extensions().issubset(names):
+                raise RequiredExtensionMissingError(f"extension '{name}' is missing required extensions {list(cls.required_extensions())}")
         return self.sort_extensions(active_extensions)
 
     @staticmethod
@@ -162,6 +191,8 @@ class RockerExtensionManager:
         for name, cls in extensions.items():
             if name == "user" or "user" in cls.desired_extensions():
                 user_extension_graph[name] = cls.desired_extensions()
+            elif name == "user" or "user" in cls.required_extensions():
+                user_extension_graph[name] = cls.required_extensions()
             else:
                 root_extension_graph[name] = cls.desired_extensions()
         active_extension_list = []
@@ -355,15 +386,14 @@ class DockerImageGenerator(object):
                 )
                 return 1
 
-#         for e in self.active_extensions:
-#             try:
-#                 print(f"Validate: {e.get_name()}")
-#                 e.validate_environment(self.cliargs)
-#             except subprocess.CalledProcessError as ex:
-#                 console.error("Failed to validate environment for extension '%s' [%s][%s]" % (
-#                     e.get_name(), ex.returncode, ex.output)
-#                 )
-#                 return 1
+        for extension in self.active_extensions:
+            try:
+                extension.validate_environment(self.cliargs)
+            except ValidateError as e:
+                console.error("Failed to validate environment for extension '%s' [%s]" % (
+                    extension.get_name(), str(e))
+                )
+                return 1
 
         cmd = self.generate_docker_cmd(command, **kwargs)
         operating_mode = self.get_operating_mode(kwargs)

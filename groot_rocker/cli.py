@@ -116,12 +116,16 @@ def main():
 
 def build_and_run(options: typing.Dict[str, typing.Any]):
     extension_manager = core.RockerExtensionManager()
-    active_extensions = extension_manager.get_active_extensions(options)
     console.banner("Command Line")
     print(console.green + "Options" + console.reset)
     for k, v in options.items():
         print(" - " + console.cyan + str(k) + console.reset + ": " + console.yellow + str(v) + console.reset)
     print(console.green + "\nActive Extensions" + console.reset)
+    try:
+        active_extensions = extension_manager.get_active_extensions(options)
+    except core.RequiredExtensionMissingError as e:
+        console.error(f"Aborting, {str(e)}")
+        return 1
     for e in active_extensions:
         print(" - " + console.cyan + e.get_name() + console.reset)
     base_image = options["image"]
