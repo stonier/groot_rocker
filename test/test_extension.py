@@ -174,47 +174,6 @@ class ContainerNameExtensionTest(unittest.TestCase):
         self.assertTrue('--name docker_name' in args)
 
 
-class PulseExtensionTest(unittest.TestCase):
-
-    def setUp(self):
-        # Work around interference between empy Interpreter
-        # stdout proxy and test runner. empy installs a proxy on stdout
-        # to be able to capture the information.
-        # And the test runner creates a new stdout object for each test.
-        # This breaks empy as it assumes that the proxy has persistent
-        # between instances of the Interpreter class
-        # empy will error with the exception
-        # "em.Error: interpreter stdout proxy lost"
-        em.Interpreter._wasProxyInstalled = False
-
-    def test_pulse_extension(self):
-        plugins = list_plugins()
-        pulse_plugin = plugins['pulse']
-        self.assertEqual(pulse_plugin.get_name(), 'pulse')
-
-        p = pulse_plugin()
-        self.assertTrue(plugin_load_parser_correctly(pulse_plugin))
-        
-        mock_cliargs = {}
-        snippet = p.get_snippet(mock_cliargs)
-        #first line
-        self.assertIn('RUN mkdir -p /etc/pulse', snippet)
-        self.assertIn('default-server = unix:/run/user/', snippet) #skipping user id that's system dependent
-        self.assertIn('autospawn = no', snippet)
-        self.assertIn('daemon-binary = /bin/true', snippet)
-        #last line
-        self.assertIn('> /etc/pulse/client.conf', snippet)
-        self.assertEqual(p.get_preamble(mock_cliargs), '')
-        docker_args = p.get_docker_args(mock_cliargs)
-        self.assertIn('-v /run/user/', docker_args)
-        self.assertIn('/pulse:/run/user/', docker_args)
-        self.assertIn('/pulse --device /dev/snd ', docker_args)
-        self.assertIn(' -e PULSE_SERVER=unix', docker_args)
-        self.assertIn('/pulse/native -v', docker_args)
-        self.assertIn('/pulse/native:', docker_args)
-        self.assertIn('/pulse/native --group-add', docker_args)
-
-
 class EnvExtensionTest(unittest.TestCase):
 
     def setUp(self):
