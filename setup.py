@@ -53,7 +53,6 @@ kwargs = {
             'env = groot_rocker.extensions:Environment',
             'home = groot_rocker.extensions:HomeDir',
             'network = groot_rocker.extensions:Network',
-            'pulse = groot_rocker.extensions:PulseAudio',
         ]
     },
     'author': 'Daniel Stonier',
