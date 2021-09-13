@@ -5,6 +5,12 @@ Forthcoming
 -----------
 * ...
 
+0.4.0 (2021-09-13)
+------------------
+* [core] checks for validate_environment, `#34 <https://github.com/stonier/groot_rocker/pull/34>`_
+* [core] introduce required_extensions, `#34 <https://github.com/stonier/groot_rocker/pull/34>`_
+* [extensions] remove dysfunctional pulseaudio, `#34 <https://github.com/stonier/groot_rocker/pull/34>`_
+
 0.3.4 (2021-08-13)
 ------------------
 * [core] move on from deprecated distro.linux_distribution(), `#33 <https://github.com/stonier/groot_rocker/pull/33>`_

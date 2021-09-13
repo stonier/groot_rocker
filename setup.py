@@ -39,7 +39,7 @@ install_requires.append(docker_package)
 
 kwargs = {
     'name': 'groot_rocker',
-    'version': '0.3.4',
+    'version': '0.4.0',
     'packages': ['groot_rocker'],
     'package_data': {'groot_rocker': ['templates/*.em']},
     'entry_points': {
