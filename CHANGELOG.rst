@@ -3,6 +3,10 @@ Release Notes
 
 Forthcoming
 -----------
+* ...
+
+0.4.1 (2021-10-13)
+------------------
 * [os_detect] bugfix segfaulting staticx, `#35 <https://github.com/stonier/groot_rocker/pull/35>`_
 
 0.4.0 (2021-09-13)
